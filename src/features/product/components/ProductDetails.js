@@ -8,7 +8,6 @@ import { selectLoggedInUser } from "../../../auth/AuthSlice";
 import { addToCartAsync, selectItems } from "../../cart/CartSlice";
 import { discountedPrice } from "../../../app/constant";
 import { useAlert } from "react-alert";
-
 const colors = [
   { name: "White", class: "bg-white", selectedClass: "ring-gray-400" },
   { name: "Gray", class: "bg-gray-200", selectedClass: "ring-gray-400" },
@@ -27,11 +26,9 @@ const sizes = [
 const highlights = [
   "The highlights you submit should provide shoppers with easily consumable, quick-to-scan sentence fragments that answer the most common consumer questions or that focus on the most important attributes of the product.",
 ];
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-
 export default function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
@@ -43,23 +40,23 @@ export default function ProductDetails() {
   const alert = useAlert();
   const handleCart = (e) => {
     e.preventDefault();
-    if (items.findIndex((item) => item.product.id === product.id) < 0) {
+    if (items.findIndex((item) => item.productId === product.id) < 0) {
       const newItems = {
-        product: product.id,
+        ...product,
+        productId: product.id,
         quantity: 1,
         user: user.id,
       };
+      delete newItems["id"];
       dispatch(addToCartAsync(newItems));
       alert.success("Item Added to Cart");
     } else {
       alert.error("Item Already Added");
     }
   };
-
   useEffect(() => {
     dispatch(fetchAllProductByIdAsync(params.id));
   }, [dispatch, params.id]);
-
   return (
     <div className="bg-white">
       {product && (
@@ -103,7 +100,6 @@ export default function ProductDetails() {
               </li>
             </ol>
           </nav>
-
           {/* Image gallery */}
           <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
             <div className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block">
@@ -137,7 +133,6 @@ export default function ProductDetails() {
               />
             </div>
           </div>
-
           {/* Product info */}
           <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
             <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
@@ -145,14 +140,12 @@ export default function ProductDetails() {
                 {product.title}
               </h1>
             </div>
-
             {/* Options */}
             <div className="mt-4 lg:row-span-3 lg:mt-0">
               <h2 className="sr-only">Product information</h2>
               <p className="text-3xl tracking-tight text-gray-900">
                 ₹{discountedPrice(product)}
               </p>
-
               {/* Reviews */}
               <div className="mt-6">
                 <h3 className="sr-only">Reviews</h3>
@@ -174,12 +167,10 @@ export default function ProductDetails() {
                   <p className="sr-only">{product.rating} out of 5 stars</p>
                 </div>
               </div>
-
               <form className="mt-10">
                 {/* Colors */}
                 <div>
                   <h3 className="text-sm font-medium text-gray-900">Color</h3>
-
                   <RadioGroup
                     value={selectedColor}
                     onChange={setSelectedColor}
@@ -217,7 +208,6 @@ export default function ProductDetails() {
                     </div>
                   </RadioGroup>
                 </div>
-
                 {/* Sizes */}
                 <div className="mt-10">
                   <div className="flex items-center justify-between">
@@ -229,7 +219,6 @@ export default function ProductDetails() {
                       Size guide
                     </a>
                   </div>
-
                   <RadioGroup
                     value={selectedSize}
                     onChange={setSelectedSize}
@@ -298,7 +287,6 @@ export default function ProductDetails() {
                     </div>
                   </RadioGroup>
                 </div>
-
                 <button
                   onClick={handleCart}
                   type="submit"
@@ -306,31 +294,23 @@ export default function ProductDetails() {
                 >
                   Add to Cart
                 </button>
-                <button
-                  onClick={() => {
-                    
-                  }}
-                ></button>
+                <button onClick={() => {}}></button>
               </form>
             </div>
-
             <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
               {/* Description and details */}
               <div>
                 <h3 className="sr-only">Description</h3>
-
                 <div className="space-y-6">
                   <p className="text-base text-gray-900">
                     {product.description}
                   </p>
                 </div>
               </div>
-
               <div className="mt-10">
                 <h3 className="text-sm font-medium text-gray-900">
                   Highlights
                 </h3>
-
                 <div className="mt-4">
                   <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
                     {highlights.map((highlight) => (
@@ -341,10 +321,8 @@ export default function ProductDetails() {
                   </ul>
                 </div>
               </div>
-
               <div className="mt-10">
                 <h2 className="text-sm font-medium text-gray-900">Brand</h2>
-
                 <div className="mt-4 space-y-6">
                   <p className="text-sm text-gray-600">{product.brand}</p>
                 </div>

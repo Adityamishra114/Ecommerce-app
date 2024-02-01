@@ -1,7 +1,6 @@
 import { Link, Navigate } from "react-router-dom";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
 import {
   deleteCartItemsAsync,
   selectItems,
@@ -14,6 +13,7 @@ import {
   selectCurrentOrder,
 } from "../features/order/orderSlice";
 import { discountedPrice } from "../app/constant";
+import Modal from "../features/common/Modal";
 
 const Checkout = () => {
   const {
@@ -26,16 +26,17 @@ const Checkout = () => {
   const currentOrder = useSelector(selectCurrentOrder);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(true);
+  const [openModal, setOpenModal] = useState(null);
   const items = useSelector(selectItems);
   const totalAmount = items.reduce(
-    (amount, item) => discountedPrice(item.product) * item.quantity + amount,
+    (amount, item) => discountedPrice(item) * item.quantity + amount,
     0
   );
   const totalItems = items.reduce((total, item) => item.quantity + total, 0);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const handleQuantity = (e, item) => {
-    dispatch(updateCartAsync({id:item.id, quantity: +e.target.value }));
+    dispatch(updateCartAsync({ ...item, quantity: +e.target.value }));
   };
 
   const handleDelete = (e, id) => {
@@ -95,7 +96,6 @@ const Checkout = () => {
                   <p className="mt-1 text-sm leading-6 text-gray-600">
                     Use a permanent address where you can receive mail.
                   </p>
-
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div className="sm:col-span-6">
                       <label
@@ -134,7 +134,6 @@ const Checkout = () => {
                         />
                       </div>
                     </div>
-
                     <div className="sm:col-span-6">
                       <label
                         htmlFor="phone"
@@ -153,7 +152,6 @@ const Checkout = () => {
                         />
                       </div>
                     </div>
-
                     <div className="col-span-full">
                       <label
                         htmlFor="street-address"
@@ -172,7 +170,6 @@ const Checkout = () => {
                         />
                       </div>
                     </div>
-
                     <div className="sm:col-span-2 sm:col-start-1">
                       <label
                         htmlFor="city"
@@ -191,7 +188,6 @@ const Checkout = () => {
                         />
                       </div>
                     </div>
-
                     <div className="sm:col-span-2">
                       <label
                         htmlFor="state"
@@ -210,7 +206,6 @@ const Checkout = () => {
                         />
                       </div>
                     </div>
-
                     <div className="sm:col-span-2">
                       <label
                         htmlFor="pinCode"
@@ -231,7 +226,6 @@ const Checkout = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="mt-6 flex items-center justify-end gap-x-6 ">
                   <button
                     type="button"
@@ -349,22 +343,21 @@ const Checkout = () => {
                       <li key={item?.id} className="flex py-6">
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                           <img
-                            src={item.product.thumbnail}
-                            alt={item.product.title}
+                            src={item.thumbnail}
+                            alt={item.title}
                             className="h-full w-full object-cover object-center"
                           />
                         </div>
-
                         <div className="ml-4 flex flex-1 flex-col">
                           <div>
                             <div className="flex justify-between text-base font-medium text-gray-900">
                               <h3>
-                                <Link>{item.product.title}</Link>
+                                <Link>{item.title}</Link>
                               </h3>
-                              <p className="ml-4">₹{discountedPrice(item.product)}</p>
+                              <p className="ml-4">₹{item.price}</p>
                             </div>
                             <p className="mt-1 text-sm text-gray-500">
-                              {item.product.brand}
+                              {item.brand}
                             </p>
                           </div>
                           <div className="flex flex-1 items-end justify-between text-sm">
@@ -386,10 +379,18 @@ const Checkout = () => {
                                 <option value="5">5</option>
                               </select>
                             </div>
-
                             <div className="flex">
+                              <Modal
+                                title={`Delete ${item.title}`}
+                                message="Are you sure you want to delete this checkout item?"
+                                cancelOption="Cancel"
+                                dangerOption="Delete"
+                                dangerAction={(e) => handleDelete(e, item.id)}
+                                cancelAction={() => setOpenModal(null)}
+                                showModal={openModal === item.id}
+                              />
                               <button
-                                onClick={(e) => handleDelete(e, item.id)}
+                                onClick={(e) => setOpenModal(item.id)}
                                 type="button"
                                 className="font-medium text-indigo-600 hover:text-indigo-500"
                               >
@@ -403,7 +404,6 @@ const Checkout = () => {
                   </ul>
                 </div>
               </div>
-
               <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                 <div className="flex justify-between my-2 text-base font-medium text-gray-900">
                   <p>Subtotal</p>
@@ -449,5 +449,4 @@ const Checkout = () => {
     </>
   );
 };
-
 export default Checkout;

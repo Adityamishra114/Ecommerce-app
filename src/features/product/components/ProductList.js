@@ -11,7 +11,6 @@ import {
   selectProductListStatus,
   selectTotalItems,
 } from "../productSlice";
-
 import { Fragment, useState } from "react";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -31,7 +30,6 @@ import { Link } from "react-router-dom";
 import { ITEM_PER_PAGE, discountedPrice } from "../../../app/constant";
 import Pagination from "../../common/Pagination";
 import { RotatingLines } from "react-loader-spinner";
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -46,7 +44,6 @@ export default function ProductList() {
   const [sort, setSort] = useState({});
   const [page, setPage] = useState(1);
   const status = useSelector(selectProductListStatus)
-
   const handleFilter = (e, section, option) => {
     console.log(e.target.checked);
     const newFilter = { ...filter };
@@ -77,16 +74,13 @@ export default function ProductList() {
     const pagination = { _page: page, _limit: ITEM_PER_PAGE };
     dispatch(fetchProductsByFilterAsync({ filter, sort, pagination }));
   }, [dispatch, filter, sort, page]);
-
   useEffect(() => {
     setPage(1);
   }, [totalItems, sort]);
-
   useEffect(() => {
     dispatch(fetchBrandsAsync());
     dispatch(fetchCategoriesAsync());
   }, []);
-
   const sortOptions = [
     { name: "Best Rating", sort: "rating", order: "desc", current: false },
     { name: "Price: Low to High", sort: "price", order: "asc", current: false },
@@ -109,7 +103,6 @@ export default function ProductList() {
       options: brands,
     },
   ];
-
   return (
     <div>
       <div>
@@ -126,7 +119,6 @@ export default function ProductList() {
                 <h1 className="text-4xl font-bold tracking-tight text-gray-900">
                   All Product
                 </h1>
-
                 <div className="flex items-center">
                   <Menu as="div" className="relative inline-block text-left">
                     <div>
@@ -138,7 +130,6 @@ export default function ProductList() {
                         />
                       </Menu.Button>
                     </div>
-
                     <Transition
                       as={Fragment}
                       enter="transition ease-out duration-100"
@@ -172,7 +163,6 @@ export default function ProductList() {
                       </Menu.Items>
                     </Transition>
                   </Menu>
-
                   <button
                     type="button"
                     className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
@@ -190,7 +180,6 @@ export default function ProductList() {
                   </button>
                 </div>
               </div>
-
               <section
                 aria-labelledby="products-heading"
                 className="pb-24 pt-6"
@@ -198,19 +187,16 @@ export default function ProductList() {
                 <h2 id="products-heading" className="sr-only">
                   Products
                 </h2>
-
                 <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                   {/* Filters */}
                   <DesktopFilter
                     handleFilter={handleFilter}
                     filters={filters}
                   />
-
                   {/* Product grid */}
                   <ProductGrid products={products} status={status} />
                 </div>
               </section>
-
               <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
                 <Pagination
                   page={page}
@@ -226,7 +212,6 @@ export default function ProductList() {
     </div>
   );
 }
-
 const MobileFilter = ({
   handleFilter,
   mobileFiltersOpen,
@@ -253,7 +238,6 @@ const MobileFilter = ({
           >
             <div className="fixed inset-0 bg-black bg-opacity-25" />
           </Transition.Child>
-
           <div className="fixed inset-0 z-40 flex">
             <Transition.Child
               as={Fragment}
@@ -279,10 +263,10 @@ const MobileFilter = ({
 
                 {/* Filters */}
                 <form className="mt-4 border-t border-gray-200">
-                  {filters?.map((section) => (
+                  {filters.map((section) => (
                     <Disclosure
                       as="div"
-                      key={section?.id}
+                      key={section.id}
                       className="border-t border-gray-200 px-4 py-6"
                     >
                       {({ open }) => (
@@ -290,7 +274,7 @@ const MobileFilter = ({
                           <h3 className="-mx-2 -my-3 flow-root">
                             <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
                               <span className="font-medium text-gray-900">
-                                {section?.name}
+                                {section.name}
                               </span>
                               <span className="ml-6 flex items-center">
                                 {open ? (
@@ -309,17 +293,17 @@ const MobileFilter = ({
                           </h3>
                           <Disclosure.Panel className="pt-6">
                             <div className="space-y-6">
-                              {section?.options?.map((option, optionIdx) => (
+                              {section.options.map((option, optionIdx) => (
                                 <div
-                                  key={option?.value ?? optionIdx}
+                                  key={option.value}
                                   className="flex items-center"
                                 >
                                   <input
                                     id={`filter-mobile-${section.id}-${optionIdx}`}
-                                    name={`${section?.id}[]`}
-                                    defaultValue={option?.value}
+                                    name={`${section.id}[]`}
+                                    defaultValue={option.value}
                                     type="checkbox"
-                                    defaultChecked={option?.checked}
+                                    defaultChecked={option.checked}
                                     onChange={(e) =>
                                       handleFilter(e, section, option)
                                     }
@@ -353,7 +337,7 @@ const DesktopFilter = ({ handleFilter, filters }) => {
     <>
       {" "}
       <form className="hidden lg:block">
-        {filters?.map((section) => (
+        {filters.map((section) => (
           <Disclosure
             as="div"
             key={section.id}
@@ -364,7 +348,7 @@ const DesktopFilter = ({ handleFilter, filters }) => {
                 <h3 className="-my-3 flow-root">
                   <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
                     <span className="font-medium text-gray-900">
-                      {section?.name}
+                      {section.name}
                     </span>
                     <span className="ml-6 flex items-center">
                       {open ? (
@@ -377,14 +361,14 @@ const DesktopFilter = ({ handleFilter, filters }) => {
                 </h3>
                 <Disclosure.Panel className="pt-6">
                   <div className="space-y-4">
-                    {section?.options?.map((option, optionIdx) => (
-                      <div key={option?.value ?? optionIdx} className="flex items-center">
+                    {section.options.map((option, optionIdx) => (
+                      <div key={option.value} className="flex items-center">
                         <input
-                          id={`filter-${section?.id}-${optionIdx}`}
-                          name={`${section?.id}[]`}
-                          defaultValue={option?.value}
+                          id={`filter-${section.id}-${optionIdx}`}
+                          name={`${section.id}[]`}
+                          defaultValue={option.value}
                           type="checkbox"
-                          defaultChecked={option?.checked}
+                          defaultChecked={option.checked}
                           onChange={(e) => handleFilter(e, section, option)}
                           className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         />
@@ -392,7 +376,7 @@ const DesktopFilter = ({ handleFilter, filters }) => {
                           htmlFor={`filter-${section.id}-${optionIdx}`}
                           className="ml-3 text-sm text-gray-600"
                         >
-                          {option?.label}
+                          {option.label}
                         </label>
                       </div>
                     ))}
@@ -406,7 +390,6 @@ const DesktopFilter = ({ handleFilter, filters }) => {
     </>
   );
 };
-
 const ProductGrid = ({ products,status }) => {
   return (
     <>

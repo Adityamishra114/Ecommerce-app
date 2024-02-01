@@ -15,13 +15,9 @@ export const createUserAsync = createAsyncThunk(
 );
 export const checkUserAsync = createAsyncThunk(
   "user/checkUser",
-  async (loginInfo, { rejectWithValue }) => {
-    try {
-      const response = await checkUser(loginInfo);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error);
-    }
+  async (loginInfo) => {
+    const response = await checkUser(loginInfo);
+    return response.data;
   }
 );
 export const updateUserAsync = createAsyncThunk(
@@ -38,7 +34,6 @@ export const signOutAsync = createAsyncThunk(
     return response.data;
   }
 );
-
 export const userSlice = createSlice({
   name: "user",
   initialState,
@@ -66,7 +61,7 @@ export const userSlice = createSlice({
       })
       .addCase(checkUserAsync.rejected, (state, action) => {
         state.status = "idle";
-        state.error = action.payload;
+        state.error = action.error;
       })
       .addCase(updateUserAsync.pending, (state) => {
         state.status = "loading";
@@ -84,9 +79,7 @@ export const userSlice = createSlice({
       });
   },
 });
-
 export const { increment } = userSlice.actions;
 export const selectLoggedInUser = (state) => state.auth.loggedInUser;
 export const selectError = (state) => state.auth.error;
-
 export default userSlice.reducer;

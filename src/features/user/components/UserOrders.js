@@ -81,23 +81,23 @@ export default function UserOrders() {
                 <p>{order.totalItems} items</p>
               </div>
               <p className="mt-0.5 text-sm text-gray-500">Shipping Address:</p>
-              <div className="flex justify-between gap-x-6 px-5  py-5 border-solid border-2 border-gray">
+              <div className="flex justify-between gap-x-6 px-5 mt-5 py-5 border-solid border-2 border-gray">
                 <div className="flex min-w-0 gap-x-4">
                   <div className="min-w-0 flex-auto">
                     <p className="text-sm font-semibold leading-6 text-gray-900">
-                      {order.selectedAddress.name}
+                      {order?.selectedAddress?.name}
                     </p>
                     <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                      {order.selectedAddress.street}
+                      {order?.selectedAddress?.street}
                     </p>
                   </div>
                 </div>
                 <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
                   <p className="text-sm leading-6 text-gray-900">
-                    {order.selectedAddress.pinCode}
+                    {order?.selectedAddress?.pinCode}
                   </p>
                   <p className="text-sm leading-6 text-gray-900">
-                    {order.selectedAddress.city}
+                    {order?.selectedAddress?.city}
                   </p>
                 </div>
               </div>
